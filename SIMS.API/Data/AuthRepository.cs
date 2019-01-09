@@ -7,15 +7,15 @@ namespace SIMS.API.Data
 {
     public class AuthRepository : IAuthRepository
     {
-        private readonly DataContext _context;
+        private readonly DataContext context;
         public AuthRepository(DataContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<User> Login(string username, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            var user = await this.context.Users.FirstOrDefaultAsync(x => x.Username == username);
             if (user == null) {
                 return null;
             }
@@ -46,8 +46,8 @@ namespace SIMS.API.Data
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            await this.context.Users.AddAsync(user);
+            await this.context.SaveChangesAsync();
 
             return user;
         }
@@ -63,7 +63,7 @@ namespace SIMS.API.Data
 
         public async Task<bool> UserExists(string username)
         {
-            if (await _context.Users.AnyAsync(x => x.Username == username)) {
+            if (await this.context.Users.AnyAsync(x => x.Username == username)) {
                 return true;
             }
             return false;

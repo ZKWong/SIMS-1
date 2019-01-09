@@ -12,15 +12,15 @@ namespace SIMS.API.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly DataContext context;
         public ValuesController(DataContext context) {
-            _context = context;
+            this.context = context;
         }
         // GET api/values
         [HttpGet]
         public async Task<IActionResult> GetValues()
         {
-            var values = await _context.Values.ToListAsync();
+            var values = await this.context.Values.ToListAsync();
             return Ok(values);
         }
 
@@ -28,7 +28,7 @@ namespace SIMS.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetValue(int id)
         {
-            var value = await _context.Values.FirstOrDefaultAsync(x => x.Id == id);
+            var value = await this.context.Values.FirstOrDefaultAsync(x => x.Id == id);
             return Ok(value);
         }
 
