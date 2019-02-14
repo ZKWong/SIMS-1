@@ -22,7 +22,7 @@ namespace SIMS.API.Data
                 byte[] passwordHash, passwordSalt;
                 CreatePasswordHash("password", out passwordHash, out passwordSalt);
                 user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordHash;
+                user.PasswordSalt = passwordSalt;
                 user.Username = user.Username.ToLower();
                 this.context.Users.Add(user);
             }
