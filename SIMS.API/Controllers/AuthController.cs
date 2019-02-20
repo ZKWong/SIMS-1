@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -18,10 +19,12 @@ namespace SIMS.API.Controllers
     {
         private readonly IAuthRepository repo;
         private readonly IConfiguration config;
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        private readonly IMapper mapper;
+        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
         {
             this.repo = repo;
             this.config = config;
+            this.mapper = mapper;
         }
 
         [HttpPost("register")]
@@ -33,14 +36,13 @@ namespace SIMS.API.Controllers
                 return BadRequest("Username already exists");
             }
 
-            var userToCreate = new User
-            {
-                Username = userForRegisterDto.Username
-            };
+            var userToCreate = this.mapper.Map<User>(userForRegisterDto);
 
             var createdUser = await this.repo.Register(userToCreate, userForRegisterDto.Password);
+
+            var userToReturn = this.mapper.Map<UserForDetailedDto>(createdUser);
             
-            return StatusCode(201); // throw code for now
+            return CreatedAtRoute("GetUser", new {controller = "Users", id = createdUser.Id}, userToReturn); // throw code for now
         }
 
         [HttpPost("login")]
